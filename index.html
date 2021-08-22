@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索页</title>
+    <link rel="stylesheet" href="css/search.css">
+</head>
+<body>
+<form action="http://www.baidu.com.cn/s"  method="get" class="show">
+    <input type="hidden" name="cl" value="3">
+    <input type="text" id="text" name="wd" placeholder="在这里输入文字" value="">
+    <input type="submit" id="go" value="搜索"></a>
+    <div class="search">
+        <ul>
+
+        </ul>
+    </div>
+</form>
+<script src="js/jquery-1.12.4.js"></script>
+<script>
+    var width = screen.width;
+    var height = screen.height;
+    $(document).ready(function () {
+        $("body").css("background","url(https://source.unsplash.com/collection/1041983/"+ width + "x" + height + ")" + "no-repeat");
+    })
+
+    var text = document.getElementById('text');
+    var search = document.getElementsByClassName('search')[0];
+    var oul = document.querySelector(".search ul");
+    var go =document.getElementById("go");
+    // 每次键盘抬起
+    text.onkeyup = function(){
+        // 获取输入框里面的内容
+        var val = this.value;
+        // 如果输入框中不为空，就让联想列表出现，否则消失
+        search.style.display=this.value!=""?"block":"none";
+        // 每次松开键盘，都要通过script标签向百度接口获取数据
+        // 所以每次松开键盘都要生成一个script标签，通过src属性来跨域请求
+        var sc = document.createElement("script");
+        sc.src = "https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd="+ val+"&cb=lyl";
+        document.body.appendChild(sc);
+    }
+    // data参数就是链接返回的json数据，data是一个对象,data.s就是我们找的联想词
+    function lyl(data){
+        // console.log(data);
+        oul.innerHTML="";//清空
+        // 数组遍历forEach,里面有回调函数
+        data.s.forEach(function(el){
+            // console.log(el);
+            // 生成li
+            var lis = document.createElement("li");
+            // li链接到的地址<a href='https://www.baidu.com/s?wd=el
+            lis.innerHTML = "<a href='https://www.baidu.com/s?wd="+el+"'>"+el+"</a>";
+            oul.appendChild(lis);
+        })
+    }
+</script>
+</body>
+</html>
